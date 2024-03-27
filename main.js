@@ -95,6 +95,24 @@ function DisplayTodos() {
             DisplayTodos();
         });
 
+        // Adding edit functionality
+        edit.addEventListener('click', e => {
+            const input = content.querySelector('input');
+            input.removeAttribute('readonly');
+            input.focus();
+            input.addEventListener('blur', e => {
+                input.setAttribute('readonly', true);
+                todo.content = e.target.value;
+                localStorage.setItem('todos', JSON.stringify(todos));
+            })
+        })
+         // Adding delete functionality
+         deleteButton.addEventListener('click', e => {
+            todos = todos.filter(t => t != todo);
+            localStorage.setItem('todos', JSON.stringify(todos));
+            DisplayTodos();
+         });
+
     })
 }
 
