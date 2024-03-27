@@ -36,84 +36,106 @@ function DisplayTodos() {
 
     todosList.innerHTML = '';
 
-    todos.forEach(todo => {
-        const todoItem = document.createElement('div');
-        todoItem.classList.add('todo-item');
-        // ADD ui for each todo
-        const label = document.createElement('label');
-        const input = document.createElement('input');
-        const span = document.createElement('span');
-        const content = document.createElement('div');
-        const actions = document.createElement('div');
-        const edit = document.createElement('button'); // Adding button to the todo
-        const deleteButton = document.createElement('button'); // Adding button to the todo
+    const sortButton = document.querySelector('#sortButton');
+    let isAscending = true;
 
-        input.type = 'checkbox';
-        input.checked = todo.done;
-        span.classList.add('bubble'); // Added checkbox bubble
-
-        if (todo.category == 'personal') {
-            span.classList.add('personal');
+    sortButton.addEventListener('click', e => {
+        isAscending = !isAscending;
+        if (!isAscending) {
+            todos.sort((a, b) => a.createdAt - b.createdAt)
+            console.log("true inside if statement")
         } else {
-            span.classList.add('business');
+            todos.sort((a, b) => b.createdAt - a.createdAt)
+            console.log("false inside else statement")
         }
-
-        content.classList.add('todo-content');
-        actions.classList.add('actions');
-        edit.classList.add('edit');  // Adding button to the todo
-        deleteButton.classList.add('delete');  // Adding button to the todo
-
-        content.innerHTML = `<input type="text" value="${todo.content}"
-        readonly>`;
-        edit.innerHTML = 'Edit'; // Creating text for button
-        deleteButton.innerHTML = 'Delete'; // Creating text for button
-
-        label.appendChild(input);
-        label.appendChild(span);
-        actions.appendChild(edit);
-        actions.appendChild(deleteButton);
-        todoItem.appendChild(label);
-        todoItem.appendChild(content);
-        todoItem.appendChild(actions);
-
-        todosList.appendChild(todoItem);
-
-        if (todo.done) {
-            todoItem.classList.add('done');
-        }
-
-        input.addEventListener('click', e => {
-            todo.done = e.target.checked;
-            localStorage.setItem('todos', JSON.stringify(todos));
-
-            if (todo.done) {
-                todoItem.classList.add('done');
-            } else {
-                todoItem.classList.remove('done');
-            }
-
-            DisplayTodos();
-        });
-
-        // Adding edit functionality
-        edit.addEventListener('click', e => {
-            const input = content.querySelector('input');
-            input.removeAttribute('readonly');
-            input.focus();
-            input.addEventListener('blur', e => {
-                input.setAttribute('readonly', true);
-                todo.content = e.target.value;
-                localStorage.setItem('todos', JSON.stringify(todos));
-            })
+        renderTodos();
         })
-         // Adding delete functionality
-         deleteButton.addEventListener('click', e => {
-            todos = todos.filter(t => t != todo);
-            localStorage.setItem('todos', JSON.stringify(todos));
-            DisplayTodos();
-         });
 
-    })
+        function renderTodos() {
+            todosList.innerHTML = '';
+            todos.forEach(todo => {
+                const todoItem = document.createElement('div');
+                todoItem.classList.add('todo-item');
+                // ADD ui for each todo
+                const label = document.createElement('label');
+                const input = document.createElement('input');
+                const span = document.createElement('span');
+                const content = document.createElement('div');
+                const actions = document.createElement('div');
+                const edit = document.createElement('button'); // Adding button to the todo
+                const deleteButton = document.createElement('button'); // Adding button to the todo
+        
+                input.type = 'checkbox';
+                input.checked = todo.done;
+                span.classList.add('bubble'); // Added checkbox bubble
+        
+                if (todo.category == 'personal') {
+                    span.classList.add('personal');
+                } else {
+                    span.classList.add('business');
+                }
+        
+                content.classList.add('todo-content');
+                actions.classList.add('actions');
+                edit.classList.add('edit');  // Adding button to the todo
+                deleteButton.classList.add('delete');  // Adding button to the todo
+        
+                content.innerHTML = `<input type="text" value="${todo.content}"
+                readonly>`;
+                edit.innerHTML = 'Edit'; // Creating text for button
+                deleteButton.innerHTML = 'Delete'; // Creating text for button
+        
+                label.appendChild(input);
+                label.appendChild(span);
+                actions.appendChild(edit);
+                actions.appendChild(deleteButton);
+                todoItem.appendChild(label);
+                todoItem.appendChild(content);
+                todoItem.appendChild(actions);
+        
+                todosList.appendChild(todoItem);
+        
+                if (todo.done) {
+                    todoItem.classList.add('done');
+                }
+        
+                input.addEventListener('click', e => {
+                    todo.done = e.target.checked;
+                    localStorage.setItem('todos', JSON.stringify(todos));
+        
+                    if (todo.done) {
+                        todoItem.classList.add('done');
+                    } else {
+                        todoItem.classList.remove('done');
+                    }
+        
+                    renderTodos();
+                });
+        
+                // Adding edit functionality
+                edit.addEventListener('click', e => {
+                    const input = content.querySelector('input');
+                    input.removeAttribute('readonly');
+                    input.focus();
+                    input.addEventListener('blur', e => {
+                        input.setAttribute('readonly', true);
+                        todo.content = e.target.value;
+                        localStorage.setItem('todos', JSON.stringify(todos));
+                    })
+                })
+                 // Adding delete functionality
+                 deleteButton.addEventListener('click', e => {
+                    todos = todos.filter(t => t != todo);
+                    localStorage.setItem('todos', JSON.stringify(todos));
+                    renderTodos();
+                 });
+        
+            
+            });
+        }
+
+        renderTodos();
+    
 }
 
 
